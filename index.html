@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Documentation  -->
+  <!-- Load the GeoJSON File - 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson' -->
+  <!-- Load icon - https://jsfiddle.net/9aheo6xb/ -->
+
+  <title>Running Admin Regions</title>
+
+  <!-- <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAwUExURQAAAFWZmZtT09Paqqqp6enru7v8HBwe/v7+Tk5M/Pz9/f39/v7+4ODjz8/P///9N9Af4AAAAFdFJOUwBA5thmAAAAAWJLR0QAiAUdSAAAAAd0SU1FB+QCEgYyN9P8dAAMf7gZbAAABK0lEQVQ4y+3TWw7CQBSE4V7JkiEHBZrIrbWRAiY0K0CmzALmzAKNkVwAYuF/r/efV7/DuN63jH5/9na5Q5KKZZgRSkzXC8p7VZWKvskZXR7VZWOxkZj7VZWN2lZTK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrLKNt7gE5b5/QD7MAAAAASUVORK5CYII=" /> -->
+
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+
+  <!-- Javascript -->
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js"></script>
+
+  <style>
+    /* Define the styles for the sidebar */
+    .sidebar {
+	  font-family: "Font Awesome 5 Free";
+	  font-size: 15px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      background-color: white;
+      border-right: 2px solid #ddd;
+      overflow: hidden;
+      transition: transform 0.3s ease-in-out;
+      z-index: 1000;
+	  padding: 20px;
+    }
+
+	.sidebar h2 {
+	  text-align: center;
+	}
+
+    /* Define the styles for the map */
+    .map {
+      position: fixed;
+      top: 0;
+      left: 250px;
+      width: calc(100% - 250px);
+      height: 100%;
+      z-index: 1;
+    }
+
+	input[type="checkbox"] {
+	  display: none;
+	}
+
+	label {
+	  display: inline-block;
+	  cursor: pointer;
+	  margin-bottom: 10px;
+	  position: relative;
+	}
+
+	label i {
+	  margin-left: 5px;
+	}
+
+	input[type="checkbox"] + label:before {
+	  content: "";
+	  display: inline-block;
+	  width: 18px;
+	  height: 18px;
+	  margin-right: 10px;
+	  position: relative;
+	  top: 8px;
+	  background-color: #fff;
+	  border: 1px solid #ccc;
+	}
+
+	input[type="checkbox"]:checked + label:before {
+	  background-color: #2ecc71;
+	  border-color: #2ecc71;
+	}
+
+	input[type="checkbox"]:checked + label:after {
+	  content: "\f00c";
+	  font-family: "Font Awesome 5 Free";
+	  font-weight: 1000;
+	  color: #fff;
+	  position: absolute;
+	  left: 2px;
+	  bottom: 2px;
+	  font-size: 19px;
+	}
+
+	.classLayersIcons {
+	  text-align: center; /* Horizontally center the text (icon) */
+	  line-height: 30px; /* Vertically center the text (icon) */
+	  color: black;
+	}
+      
+  </style>
+</head>
+<body>
+
+  <div id="sidebar" class="sidebar">
+    <!-- Add your sidebar content here -->
+	<br>
+    <h2>Running Admin Regions</h2>
+	<!-- <p>This is some text with a <i class="fas fa-check"></i> Font Awesome icon in it.</p> -->
+	<br>
+	<br>
+    Information
+
+	<input type="checkbox" id="runningHexagonsCheckbox" checked>
+	<label for="runningHexagonsCheckbox" >  Netherlands </i></label><br>
+
+	<input type="checkbox" id="zooCheckbox" checked>
+	<label for="zooCheckbox" >  Belgium</i></label><br>
+	
+  </div>
+
+  <div id="map" class="map"></div>
+
+  <script>
+    // Create the map
+	var map = L.map('map').setView([52.2, 5.8], 4);
+
+		// Set up the OSM layer
+	L.tileLayer(
+		'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			minZoom: 0,
+			maxZoom: 20
+	}).addTo(map);
+
+// Add your custom layers
+var adm0Layer = L.layerGroup();
+var adm1Layer = L.layerGroup();
+var adm2Layer = L.layerGroup();
+      
+$.getJSON("adm_0.geojson",function(data){
+// L.geoJson function is used to parse geojson file and load on to map
+    var adm0 = L.geoJson(data, {style: adm0Style})
+        adm0.addTo(adm0Layer);
+});
+
+$.getJSON("adm_1.geojson",function(data){
+// L.geoJson function is used to parse geojson file and load on to map
+    var adm1 = L.geoJson(data, {style: adm1Style})
+        adm1.addTo(adm1Layer);
+});
+      
+$.getJSON("adm_2.geojson",function(data){
+// L.geoJson function is used to parse geojson file and load on to map
+    var adm2 = L.geoJson(data, {style: adm2Style})
+        adm2.addTo(adm2Layer);
+});
+
+
+// Add the layers to the map
+  adm0Layer.addTo(map);
+  //adm1Layer.addTo(map);
+
+ // Define the zoom levels at which layers should be added/removed
+  var adm0ZoomLevel = 6;
+  var adm1ZoomLevel = 8;
+
+
+  // Listen for the zoomend event
+  map.on('zoomend', function () {
+    var currentZoom = map.getZoom();
+
+    // Check the current zoom level and add/remove layers accordingly
+    if (currentZoom <= adm0ZoomLevel) {
+      map.addLayer(adm0Layer);
+    } else {
+      map.removeLayer(adm0Layer);
+    }
+
+    if (currentZoom > adm0ZoomLevel && currentZoom <= adm1ZoomLevel ) {
+      map.addLayer(adm1Layer);
+    } else {
+      map.removeLayer(adm1Layer);
+    }
+    
+    if (currentZoom > adm1ZoomLevel) {
+      map.addLayer(adm2Layer);
+    } else {
+      map.removeLayer(adm2Layer);
+    }
+    
+      
+  });
+      
+function adm0Style(feature){
+	return {
+  	fillColor: 'blue',
+    weight: 2,
+    opacity: 1,
+    color: 'white',
+    dashArray: '3',
+    fillOpacity: 0.5
+  }
+};
+      
+function adm1Style(feature){
+	return {
+  	fillColor: 'green',
+    weight: 2,
+    opacity: 1,
+    color: 'white',
+    dashArray: '3',
+    fillOpacity: 0.5
+  }
+};
+     
+function adm2Style(feature){
+	return {
+  	fillColor: 'red',
+    weight: 2,
+    opacity: 1,
+    color: 'white',
+    dashArray: '3',
+    fillOpacity: 0.5
+  }
+};
+
+      
+      
+ 
+  </script>
+</body>
+</html>
