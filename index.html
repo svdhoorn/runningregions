@@ -124,13 +124,13 @@
     <br>
     <!--  Information -->
     <br>
-    <input type="checkbox" id="adm0Checkbox" checked>
+    <input type="checkbox" disabled value="1" id="adm0Checkbox" checked>
     <label for="adm0Checkbox"> Level 0 </i></label><br>
 
-    <input type="checkbox" id="adm1Checkbox" checked>
+    <input type="checkbox" disabled value="1" id="adm1Checkbox" unchecked>
     <label for="adm1Checkbox"> Level 1 </i></label><br>
 
-    <input type="checkbox" id="adm2Checkbox" checked>
+    <input type="checkbox" disabled value="1" id="adm2Checkbox" unchecked>
     <label for="adm2Checkbox"> Level 2 </i></label><br>
 
   </div>
@@ -212,20 +212,28 @@
       // Check the current zoom level and add/remove layers accordingly
       if (currentZoom <= adm0ZoomLevel) {
         map.addLayer(adm0Layer);
+        document.getElementById('adm0Checkbox').setAttribute('checked', 'true');
       } else {
         map.removeLayer(adm0Layer);
+        adm0Checkbox.removeAttribute("checked");
       }
+
+
 
       if (currentZoom > adm0ZoomLevel && currentZoom <= adm1ZoomLevel) {
         map.addLayer(adm1Layer);
+        document.getElementById('adm1Checkbox').setAttribute('checked', 'true');
       } else {
         map.removeLayer(adm1Layer);
+        adm1Checkbox.removeAttribute("checked");
       }
 
       if (currentZoom > adm1ZoomLevel) {
         map.addLayer(adm2Layer);
+        document.getElementById('adm2Checkbox').setAttribute('checked', 'true');
       } else {
         map.removeLayer(adm2Layer);
+        adm2Checkbox.removeAttribute("checked");
       }
 
 
