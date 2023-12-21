@@ -176,6 +176,31 @@
     adm0Layer.addTo(map);
     //adm1Layer.addTo(map);
 
+    document.getElementById('adm0Checkbox').addEventListener('change', function () {
+      if (this.checked) {
+        adm0Layer.addTo(map);
+      } else {
+        adm0Layer.removeFrom(map);
+      }
+    });
+
+    document.getElementById('adm1Checkbox').addEventListener('change', function () {
+      if (this.checked) {
+        adm1Layer.addTo(map);
+      } else {
+        adm1Layer.removeFrom(map);
+      }
+    });
+
+    document.getElementById('adm2Checkbox').addEventListener('change', function () {
+      if (this.checked) {
+        adm2Layer.addTo(map);
+      } else {
+        adm2Layer.removeFrom(map);
+      }
+    });
+
+
     // Define the zoom levels at which layers should be added/removed
     var adm0ZoomLevel = 6;
     var adm1ZoomLevel = 8;
@@ -207,29 +232,7 @@
 
     });
 
-    document.getElementById('adm0Checkbox').addEventListener('change', function () {
-      if (this.checked) {
-        adm0Layer.addTo(map);
-      } else {
-        adm0Layer.removeFrom(map);
-      }
-    });
 
-    document.getElementById('adm1Checkbox').addEventListener('change', function () {
-      if (this.checked) {
-        adm1Layer.addTo(map);
-      } else {
-        adm1Layer.removeFrom(map);
-      }
-    });
-
-    document.getElementById('adm2Checkbox').addEventListener('change', function () {
-      if (this.checked) {
-        adm2Layer.addTo(map);
-      } else {
-        adm2Layer.removeFrom(map);
-      }
-    });
 
 
 
