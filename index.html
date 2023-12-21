@@ -174,7 +174,8 @@
 
     // Add the layers to the map
     adm0Layer.addTo(map);
-    //adm1Layer.addTo(map);
+    adm1Layer.addTo(map);
+    adm2Layer.addTo(map);
 
     document.getElementById('adm0Checkbox').addEventListener('change', function () {
       if (this.checked) {
@@ -202,8 +203,8 @@
 
 
     // Define the zoom levels at which layers should be added/removed
-    var adm0ZoomLevel = 6;
-    var adm1ZoomLevel = 8;
+    var adm0ZoomLevel = 5;
+    var adm1ZoomLevel = 7;
 
 
     // Listen for the zoomend event
