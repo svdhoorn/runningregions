@@ -117,13 +117,16 @@
 	<br>
     Information
 
-	<input type="checkbox" id="runningHexagonsCheckbox" checked>
-	<label for="runningHexagonsCheckbox" >  Netherlands </i></label><br>
+	<input type="checkbox" id="adm0Checkbox" checked>
+	<label for="adm0Checkbox" >  Level 0 </i></label><br>
 
-	<input type="checkbox" id="zooCheckbox" checked>
-	<label for="zooCheckbox" >  Belgium</i></label><br>
-	
-  </div>
+	<input type="checkbox" id="adm1Checkbox" checked>
+	<label for="adm1Checkbox" >  Level 1 </i></label><br>
+
+  <input type="checkbox" id="adm2Checkbox" checked>
+	<label for="adm2Checkbox" >  Level 2 </i></label><br>
+
+	  </div>
 
   <div id="map" class="map"></div>
 
@@ -196,7 +199,33 @@ $.getJSON("adm_2.geojson",function(data){
     
       
   });
-      
+
+document.getElementById('adm0Checkbox').addEventListener('change', function() {
+						if (this.checked) {
+							adm0Layer.addTo(map);
+						} else {
+							adm0Layer.removeFrom(map);
+						}
+					});
+
+document.getElementById('adm1Checkbox').addEventListener('change', function() {
+						if (this.checked) {
+							adm1Layer.addTo(map);
+						} else {
+							adm1Layer.removeFrom(map);
+						}
+					});
+
+document.getElementById('adm2Checkbox').addEventListener('change', function() {
+						if (this.checked) {
+							adm2Layer.addTo(map);
+						} else {
+							adm2Layer.removeFrom(map);
+						}
+					});
+
+
+
 function adm0Style(feature){
 	return {
   	fillColor: 'blue',
