@@ -133,6 +133,9 @@
     <input type="checkbox" disabled value="1" id="adm2Checkbox" unchecked>
     <label for="adm2Checkbox"> Level 2 </i></label><br>
 
+    <input type="checkbox" disabled value="1" id="adm3Checkbox" unchecked>
+    <label for="adm3Checkbox"> Level 3 </i></label><br>
+
   </div>
 
   <div id="map" class="map"></div>
@@ -148,10 +151,39 @@
       maxZoom: 20
     }).addTo(map);
 
+    // Create a custom control for the zoom level
+    var ZoomLevelControl = L.Control.extend({
+      options: {
+        position: 'bottomright'
+      },
+
+      onAdd: function (map) {
+        this._container = L.DomUtil.create('div', 'zoom-level-control');
+        this._container.style.backgroundColor = 'white';
+        this._container.style.padding = '5px';
+        this._container.style.border = '1px solid #ccc';
+        this._container.style.borderRadius = '5px';
+        this._container.innerText = 'Zoom Level: ' + map.getZoom();
+
+        return this._container;
+      }
+    });
+
+    // Add the custom control to the map
+    var zoomLevelControl = new ZoomLevelControl();
+    map.addControl(zoomLevelControl);
+
+    // Update the zoom level display on zoom
+    map.on('zoomend', function () {
+      zoomLevelControl._container.innerText = 'Zoom Level: ' + map.getZoom();
+    });
+    // End of zoom level
+
     // Add your custom layers
     var adm0Layer = L.layerGroup();
     var adm1Layer = L.layerGroup();
     var adm2Layer = L.layerGroup();
+    var adm3Layer = L.layerGroup();
 
     $.getJSON("adm_0.geojson", function (data) {
       // L.geoJson function is used to parse geojson file and load on to map
@@ -169,6 +201,12 @@
       // L.geoJson function is used to parse geojson file and load on to map
       var adm2 = L.geoJson(data, { style: adm2Style })
       adm2.addTo(adm2Layer);
+    });
+
+    $.getJSON("adm_3.geojson", function (data) {
+      // L.geoJson function is used to parse geojson file and load on to map
+      var adm3 = L.geoJson(data, { style: adm3Style })
+      adm3.addTo(adm3Layer);
     });
 
 
@@ -199,10 +237,20 @@
       }
     });
 
+    document.getElementById('adm3Checkbox').addEventListener('change', function () {
+      if (this.checked) {
+        adm3Layer.addTo(map);
+      } else {
+        adm3Layer.removeFrom(map);
+      }
+    });
+
 
     // Define the zoom levels at which layers should be added/removed
     var adm0ZoomLevel = 5;
     var adm1ZoomLevel = 7;
+    var adm2ZoomLevel = 9;
+    var adm3ZoomLevel = 11;
 
 
     // Listen for the zoomend event
@@ -218,8 +266,6 @@
         adm0Checkbox.removeAttribute("checked");
       }
 
-
-
       if (currentZoom > adm0ZoomLevel && currentZoom <= adm1ZoomLevel) {
         map.addLayer(adm1Layer);
         document.getElementById('adm1Checkbox').setAttribute('checked', 'true');
@@ -228,7 +274,7 @@
         adm1Checkbox.removeAttribute("checked");
       }
 
-      if (currentZoom > adm1ZoomLevel) {
+      if (currentZoom > adm1ZoomLevel && currentZoom <= adm2ZoomLevel) {
         map.addLayer(adm2Layer);
         document.getElementById('adm2Checkbox').setAttribute('checked', 'true');
       } else {
@@ -236,12 +282,14 @@
         adm2Checkbox.removeAttribute("checked");
       }
 
-
+      if (currentZoom > adm2ZoomLevel) {
+        map.addLayer(adm3Layer);
+        document.getElementById('adm3Checkbox').setAttribute('checked', 'true');
+      } else {
+        map.removeLayer(adm3Layer);
+        adm3Checkbox.removeAttribute("checked");
+      }
     });
-
-
-
-
 
     function adm0Style(feature) {
       return {
@@ -276,8 +324,16 @@
       }
     };
 
-
-
+    function adm3Style(feature) {
+      return {
+        fillColor: 'orange',
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.5
+      }
+    };
 
   </script>
 </body>
