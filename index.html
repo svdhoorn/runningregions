@@ -179,6 +179,21 @@
     });
     // End of zoom level
 
+    // Function Popup
+    function popup(feature, layer) {
+      var popupText =
+        "<b>Number of times :</b> " + feature.properties.count + "<br>" +
+        "<b>First time:</b> " + feature.properties.first_date + "<br>" +
+        "<b>Last time:</b> " + feature.properties.last_date;
+      layer.bindPopup(popupText, {
+        closeButton: true,
+        offset: L.point(0, -20)
+      });
+      layer.on('click', function () {
+        layer.openPopup();
+      });
+    }
+
     // Add your custom layers
     var adm0Layer = L.layerGroup();
     var adm1Layer = L.layerGroup();
@@ -187,25 +202,41 @@
 
     $.getJSON("adm_0.geojson", function (data) {
       // L.geoJson function is used to parse geojson file and load on to map
-      var adm0 = L.geoJson(data, { style: adm0Style })
+      var adm0 = L.geoJson(data, {
+        onEachFeature:
+          popup,
+        style: adm0Style
+      })
       adm0.addTo(adm0Layer);
     });
 
     $.getJSON("adm_1.geojson", function (data) {
       // L.geoJson function is used to parse geojson file and load on to map
-      var adm1 = L.geoJson(data, { style: adm1Style })
+      var adm1 = L.geoJson(data, {
+        onEachFeature:
+          popup,
+        style: adm1Style
+      })
       adm1.addTo(adm1Layer);
     });
 
     $.getJSON("adm_2.geojson", function (data) {
       // L.geoJson function is used to parse geojson file and load on to map
-      var adm2 = L.geoJson(data, { style: adm2Style })
+      var adm2 = L.geoJson(data, {
+        onEachFeature:
+          popup,
+        style: adm2Style
+      })
       adm2.addTo(adm2Layer);
     });
 
     $.getJSON("adm_3.geojson", function (data) {
       // L.geoJson function is used to parse geojson file and load on to map
-      var adm3 = L.geoJson(data, { style: adm3Style })
+      var adm3 = L.geoJson(data, {
+        onEachFeature:
+          popup,
+        style: adm3Style
+      })
       adm3.addTo(adm3Layer);
     });
 
