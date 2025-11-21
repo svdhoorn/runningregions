@@ -10,7 +10,6 @@
 
   <!-- <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAwUExURQAAAFWZmZtT09Paqqqp6enru7v8HBwe/v7+Tk5M/Pz9/f39/v7+4ODjz8/P///9N9Af4AAAAFdFJOUwBA5thmAAAAAWJLR0QAiAUdSAAAAAd0SU1FB+QCEgYyN9P8dAAMf7gZbAAABK0lEQVQ4y+3TWw7CQBSE4V7JkiEHBZrIrbWRAiY0K0CmzALmzAKNkVwAYuF/r/efV7/DuN63jH5/9na5Q5KKZZgRSkzXC8p7VZWKvskZXR7VZWOxkZj7VZWN2lZTK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrK7VZcyaFZrLKNt7gE5b5/QD7MAAAAASUVORK5CYII=" /> -->
 
-
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -38,7 +37,7 @@
       left: 0;
       width: 250px;
       height: 100%;
-      background-color: white;
+      background-color: rgb(255, 255, 255);
       border-right: 2px solid #ddd;
       overflow: hidden;
       transition: transform 0.3s ease-in-out;
@@ -108,7 +107,27 @@
       /* Horizontally center the text (icon) */
       line-height: 30px;
       /* Vertically center the text (icon) */
-      color: black;
+      color: rgb(227, 12, 12);
+    }
+
+    /* Grey out labels for unchecked checkboxes */
+    input[type="checkbox"]:not(:checked)+label {
+      color: grey;
+    }
+
+    .greyed-out {
+      color: grey;
+    }
+
+    .zoomtext {
+      font-size: 8px;
+      text-align: left;
+    }
+
+    .adm1Stats {
+      font-size: 10px;
+      text-align: center;
+      /* display: none; */
     }
   </style>
 </head>
@@ -117,30 +136,58 @@
 
   <div id="sidebar" class="sidebar">
     <!-- Add your sidebar content here -->
-    <br>
+    <h3><a href="https://svdhoorn.github.io">Home</a></h3>
+
     <h2>Running Regions</h2>
     <!-- <p>This is some text with a <i class="fas fa-check"></i> Font Awesome icon in it.</p> -->
-    <br>
-    <br>
-    <!--  Information -->
-    <br>
+
     <input type="checkbox" disabled value="1" id="adm0Checkbox" checked>
-    <label for="adm0Checkbox"> Level 0 </i></label><br>
+    <label for="adm0Checkbox"> Countries </i></label><br>
 
     <input type="checkbox" disabled value="1" id="adm1Checkbox" unchecked>
-    <label for="adm1Checkbox"> Level 1 </i></label><br>
+    <label for="adm1Checkbox"> Provinces </i></label><br>
 
     <input type="checkbox" disabled value="1" id="adm2Checkbox" unchecked>
-    <label for="adm2Checkbox"> Level 2 </i></label><br>
+    <label for="adm2Checkbox"> Municipalities </i></label><br>
 
     <input type="checkbox" disabled value="1" id="adm3Checkbox" unchecked>
-    <label for="adm3Checkbox"> Level 3 </i></label><br>
+    <label for="adm3Checkbox"> Districts </i></label><br>
+
+    <p class="zoomtext">Zoom in for more regions</p>
+    <hr>
+
+    <p class="adm1Stats" id="adm1StatsID"></p>
 
   </div>
+
+
+
 
   <div id="map" class="map"></div>
 
   <script>
+
+    fetch('adm_1_stats.json')
+      .then(response => response.text())
+      .then(text => {
+        // Split the text into lines and parse each line as JSON
+        const lines = text.trim().split('\n');
+        const countries = lines.map(line => JSON.parse(line));
+
+        // Create a text element for each country
+        const container = document.getElementById('adm1StatsID');
+        countries.forEach(country => {
+          const p = document.createElement('p');
+          p.textContent = `${country.country}: ${country.province_run}/${country.provinces_total}`;
+          container.appendChild(p);
+        });
+      })
+      .catch(error => {
+        console.error('Error loading or parsing JSON:', error);
+      });
+
+
+
     // Create the map
     var map = L.map('map').setView([52.2, 5.8], 4);
 
@@ -182,6 +229,7 @@
     // Function Popup
     function popup(feature, layer) {
       var popupText =
+        "<b>Region :</b> " + feature.properties.name + "<br>" +
         "<b>Number of times :</b> " + feature.properties.count + "<br>" +
         "<b>First time:</b> " + feature.properties.first_date + "<br>" +
         "<b>Last time:</b> " + feature.properties.last_date;
@@ -252,13 +300,15 @@
       }
     });
 
-    document.getElementById('adm1Checkbox').addEventListener('change', function () {
+    document.getElementById('adm0Checkbox').addEventListener('change', function () {
       if (this.checked) {
         adm1Layer.addTo(map);
       } else {
         adm1Layer.removeFrom(map);
       }
     });
+
+
 
     document.getElementById('adm2Checkbox').addEventListener('change', function () {
       if (this.checked) {
@@ -276,13 +326,11 @@
       }
     });
 
-
     // Define the zoom levels at which layers should be added/removed
     var adm0ZoomLevel = 5;
     var adm1ZoomLevel = 7;
     var adm2ZoomLevel = 9;
     var adm3ZoomLevel = 11;
-
 
     // Listen for the zoomend event
     map.on('zoomend', function () {
@@ -292,33 +340,41 @@
       if (currentZoom <= adm0ZoomLevel) {
         map.addLayer(adm0Layer);
         document.getElementById('adm0Checkbox').setAttribute('checked', 'true');
+        document.querySelector('label[for="adm0Checkbox"]').classList.remove('greyed-out');
       } else {
         map.removeLayer(adm0Layer);
         adm0Checkbox.removeAttribute("checked");
+        document.querySelector('label[for="adm0Checkbox"]').classList.add('greyed-out');
       }
 
       if (currentZoom > adm0ZoomLevel && currentZoom <= adm1ZoomLevel) {
         map.addLayer(adm1Layer);
         document.getElementById('adm1Checkbox').setAttribute('checked', 'true');
+        document.querySelector('label[for="adm1Checkbox"]').classList.remove('greyed-out');
       } else {
         map.removeLayer(adm1Layer);
-        adm1Checkbox.removeAttribute("checked");
+        document.getElementById('adm1Checkbox').removeAttribute('checked');
+        document.querySelector('label[for="adm1Checkbox"]').classList.add('greyed-out');
       }
 
       if (currentZoom > adm1ZoomLevel && currentZoom <= adm2ZoomLevel) {
         map.addLayer(adm2Layer);
         document.getElementById('adm2Checkbox').setAttribute('checked', 'true');
+        document.querySelector('label[for="adm2Checkbox"]').classList.remove('greyed-out');
       } else {
         map.removeLayer(adm2Layer);
         adm2Checkbox.removeAttribute("checked");
+        document.querySelector('label[for="adm2Checkbox"]').classList.add('greyed-out');
       }
 
       if (currentZoom > adm2ZoomLevel) {
         map.addLayer(adm3Layer);
         document.getElementById('adm3Checkbox').setAttribute('checked', 'true');
+        document.querySelector('label[for="adm3Checkbox"]').classList.remove('greyed-out');
       } else {
         map.removeLayer(adm3Layer);
         adm3Checkbox.removeAttribute("checked");
+        document.querySelector('label[for="adm3Checkbox"]').classList.add('greyed-out');
       }
     });
 
@@ -365,6 +421,10 @@
         fillOpacity: 0.5
       }
     };
+
+
+
+
 
   </script>
 </body>
