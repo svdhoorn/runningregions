@@ -120,14 +120,13 @@
     }
 
     .zoomtext {
-      font-size: 8px;
+      font-size: 6px;
       text-align: left;
     }
 
-    .adm1Stats {
-      font-size: 10px;
+    .admStats {
+      font-size: 8px;
       text-align: center;
-      /* display: none; */
     }
   </style>
 </head>
@@ -138,13 +137,15 @@
     <!-- Add your sidebar content here -->
     <h3><a href="https://svdhoorn.github.io">Home</a></h3>
 
+
+
     <h2>Running Regions</h2>
     <!-- <p>This is some text with a <i class="fas fa-check"></i> Font Awesome icon in it.</p> -->
 
     <input type="checkbox" disabled value="1" id="adm0Checkbox" checked>
     <label for="adm0Checkbox"> Countries </i></label><br>
 
-    <input type="checkbox" disabled value="1" id="adm1Checkbox" unchecked>
+    <input type="checkbox" disabled value="1" id="adm1Checkbox" unchecked onchange="toggleAdm1Stats()">
     <label for="adm1Checkbox"> Provinces </i></label><br>
 
     <input type="checkbox" disabled value="1" id="adm2Checkbox" unchecked>
@@ -155,18 +156,13 @@
 
     <p class="zoomtext">Zoom in for more regions</p>
     <hr>
-
-    <p class="adm1Stats" id="adm1StatsID"></p>
-
+    <p class="admStats " id="adm1StatsID" style="display: none;">Statistics</p>
+    <p class="admStats " id="adm2StatsID" style="display: none;">Statistics</p>
+    <p class="admStats " id="adm3StatsID" style="display: none;">Statistics</p>
   </div>
-
-
-
-
   <div id="map" class="map"></div>
 
   <script>
-
     fetch('adm_1_stats.json')
       .then(response => response.text())
       .then(text => {
@@ -178,7 +174,45 @@
         const container = document.getElementById('adm1StatsID');
         countries.forEach(country => {
           const p = document.createElement('p');
-          p.textContent = `${country.country}: ${country.province_run}/${country.provinces_total}`;
+          p.textContent = `${country.country}: ${country.provinces_run} of ${country.provinces_total}`;
+          container.appendChild(p);
+        });
+      })
+      .catch(error => {
+        console.error('Error loading or parsing JSON:', error);
+      });
+
+    fetch('adm_2_stats.json')
+      .then(response => response.text())
+      .then(text => {
+        // Split the text into lines and parse each line as JSON
+        const lines = text.trim().split('\n');
+        const countries = lines.map(line => JSON.parse(line));
+
+        // Create a text element for each country
+        const container = document.getElementById('adm2StatsID');
+        countries.forEach(country => {
+          const p = document.createElement('p');
+          p.textContent = `${country.country}: ${country.municipalities_run} of ${country.muncipalities_total}`;
+          container.appendChild(p);
+        });
+      })
+      .catch(error => {
+        console.error('Error loading or parsing JSON:', error);
+      });
+
+    fetch('adm_3_stats.json')
+      .then(response => response.text())
+      .then(text => {
+        // Split the text into lines and parse each line as JSON
+        const lines = text.trim().split('\n');
+        const countries = lines.map(line => JSON.parse(line));
+
+        // Create a text element for each country
+        const container = document.getElementById('adm3StatsID');
+        countries.forEach(country => {
+          const p = document.createElement('p');
+          p.textContent = `${country.country}: ${country.districts_run} of ${country.districts_total}`;
           container.appendChild(p);
         });
       })
@@ -300,7 +334,7 @@
       }
     });
 
-    document.getElementById('adm0Checkbox').addEventListener('change', function () {
+    document.getElementById('adm1Checkbox').addEventListener('change', function () {
       if (this.checked) {
         adm1Layer.addTo(map);
       } else {
@@ -351,30 +385,36 @@
         map.addLayer(adm1Layer);
         document.getElementById('adm1Checkbox').setAttribute('checked', 'true');
         document.querySelector('label[for="adm1Checkbox"]').classList.remove('greyed-out');
+        document.getElementById("adm1StatsID").style.display = "block";
       } else {
         map.removeLayer(adm1Layer);
         document.getElementById('adm1Checkbox').removeAttribute('checked');
         document.querySelector('label[for="adm1Checkbox"]').classList.add('greyed-out');
+        document.getElementById("adm1StatsID").style.display = "none";
       }
 
       if (currentZoom > adm1ZoomLevel && currentZoom <= adm2ZoomLevel) {
         map.addLayer(adm2Layer);
         document.getElementById('adm2Checkbox').setAttribute('checked', 'true');
         document.querySelector('label[for="adm2Checkbox"]').classList.remove('greyed-out');
+        document.getElementById("adm2StatsID").style.display = "block";
       } else {
         map.removeLayer(adm2Layer);
         adm2Checkbox.removeAttribute("checked");
         document.querySelector('label[for="adm2Checkbox"]').classList.add('greyed-out');
+        document.getElementById("adm2StatsID").style.display = "none";
       }
 
       if (currentZoom > adm2ZoomLevel) {
         map.addLayer(adm3Layer);
         document.getElementById('adm3Checkbox').setAttribute('checked', 'true');
         document.querySelector('label[for="adm3Checkbox"]').classList.remove('greyed-out');
+        document.getElementById("adm3StatsID").style.display = "block";
       } else {
         map.removeLayer(adm3Layer);
         adm3Checkbox.removeAttribute("checked");
         document.querySelector('label[for="adm3Checkbox"]').classList.add('greyed-out');
+        document.getElementById("adm3StatsID").style.display = "none";
       }
     });
 
