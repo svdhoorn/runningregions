@@ -130,6 +130,74 @@
       font-size: 10px;
       text-align: center;
     }
+
+      /* Portrait warning message */
+      .portrait-warning {
+        position: fixed;
+        top: 25%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* background: rgba(0, 0, 0, 0.85); */
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+        /* Ensure full coverage */
+        overflow: hidden;
+      }
+
+      .portrait-warning.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .portrait-warning-content {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 90%;
+        max-height: 90%;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        /* Prevent content from overflowing */
+        overflow: auto;
+        /* Ensure proper centering within flex container */
+        margin: auto;
+      }
+
+      .portrait-warning-content h3 {
+        margin-top: 0;
+        color: #2196f3;
+      }
+
+      .portrait-warning-content p {
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .portrait-warning-close {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #2196f3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      /* Make sidebar scrollable in landscape mode */
+      @media (orientation: landscape) and (max-width: 768px) {
+        .sidebar {
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+      }
+
+
   </style>
 </head>
 
@@ -164,6 +232,19 @@
     <p class="admStats " id="adm3StatsID" style="display: none;">Statistics</p>
   </div>
   <div id="map" class="map"></div>
+
+    <div id="portraitWarning" class="portrait-warning">
+      <div class="portrait-warning-content">
+        <h3>
+          <i class="fa-solid fa-mobile-screen"></i> Best viewed in landscape
+        </h3>
+        <p>This map works best in landscape mode on your device.</p>
+        <p>Please rotate your phone for the optimal experience.</p>
+        <button class="portrait-warning-close" onclick="closePortraitWarning()">
+          Got it!
+        </button>
+      </div>
+    </div>
 
   <script>
     fetch('adm_1_stats.json')
@@ -345,8 +426,6 @@
       }
     });
 
-
-
     document.getElementById('adm2Checkbox').addEventListener('change', function () {
       if (this.checked) {
         adm2Layer.addTo(map);
@@ -465,9 +544,46 @@
       }
     };
 
+      // Portrait warning functionality
+      function checkOrientationAndScreenSize() {
+        const isSmallScreen = window.innerWidth <= 768;
+        const isPortrait = window.innerHeight > window.innerWidth;
 
+        if (isSmallScreen && isPortrait) {
+          showPortraitWarning();
+        }
+      }
 
+      function showPortraitWarning() {
+        const warning = document.getElementById("portraitWarning");
+        warning.classList.add("show");
 
+        // Auto-hide after 5 seconds
+        setTimeout(function () {
+          closePortraitWarning();
+        }, 5000);
+      }
+
+      function closePortraitWarning() {
+        const warning = document.getElementById("portraitWarning");
+        warning.classList.remove("show");
+      }
+
+      // Check on page load
+      window.addEventListener("load", checkOrientationAndScreenSize);
+
+      // Also check on orientation change
+      window.addEventListener("resize", function () {
+        const warning = document.getElementById("portraitWarning");
+        const isSmallScreen = window.innerWidth <= 768;
+        const isPortrait = window.innerHeight > window.innerWidth;
+
+        if (isSmallScreen && isPortrait) {
+          warning.classList.add("show");
+        } else {
+          warning.classList.remove("show");
+        }
+      });
 
   </script>
 </body>
