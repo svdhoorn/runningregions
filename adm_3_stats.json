@@ -1,10 +1,11 @@
 {"country":"Austria","districts_run":3,"districts_total":2100}
 {"country":"Belgium","districts_run":1,"districts_total":43}
-{"country":"France","districts_run":9,"districts_total":349}
+{"country":"France","districts_run":11,"districts_total":349}
 {"country":"Germany","districts_run":16,"districts_total":4678}
 {"country":"Italy","districts_run":5,"districts_total":8100}
 {"country":"Luxembourg","districts_run":3,"districts_total":102}
 {"country":"Malawi","districts_run":4,"districts_total":3126}
+{"country":"United Kingdom","districts_run":7,"districts_total":406}
 {"country":"Denmark","districts_run":1,"districts_total":99}
 {"country":"Netherlands","districts_run":46,"districts_total":354}
 {"country":"Slovenia","districts_run":3,"districts_total":192}
